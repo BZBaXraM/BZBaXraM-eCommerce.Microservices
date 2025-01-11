@@ -1,0 +1,15 @@
+using System.Linq.Expressions;
+using eCommerce.Products.BLL.DTOs;
+using eCommerce.Products.DAL.Entities;
+
+namespace eCommerce.Products.BLL.Services;
+
+public interface IProductsService
+{
+    Task<IReadOnlyList<ProductResponse?>> GetProductsAsync();
+    Task<ProductResponse?> GetProductByIdAsync(Guid productId);
+    Task<IReadOnlyList<ProductResponse?>> GetProductByCondition(Expression<Func<Product, bool>> conditionExpression);
+    Task<ProductResponse?> AddProductAsync(ProductAddRequest productAddRequest);
+    Task<ProductResponse?> UpdateProductAsync(ProductUpdateRequest productUpdateRequest);
+    Task<bool> DeleteProductAsync(Guid productId);
+}
