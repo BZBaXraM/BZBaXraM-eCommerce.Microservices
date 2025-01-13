@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eCommerce.Products.DAL.Data;
 
 #nullable disable
@@ -12,7 +11,7 @@ using eCommerce.Products.DAL.Data;
 namespace eCommerce.Products.DAL.Data.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    [Migration("20250110160109_Initial")]
+    [Migration("20250113173210_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -21,30 +20,27 @@ namespace eCommerce.Products.DAL.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.11")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("eCommerce.Products.DAL.Entities.Product", b =>
                 {
                     b.Property<Guid>("ProductId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Category")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<int?>("QuantityInStock")
-                        .IsRequired()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    b.Property<double?>("UnitPrice")
-                        .HasColumnType("decimal(18, 2)");
+                    b.Property<decimal?>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("ProductId");
 

@@ -7,12 +7,12 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["eCommerce.Users.API/eCommerce.Users.API.csproj", "eCommerce.Users.API/"]
-COPY ["eCommerce.Users.Infrastructure/eCommerce.Users.Infrastructure.csproj", "eCommerce.Users.Infrastructure/"]
-COPY ["eCommerce.Users.Core/eCommerce.Users.Core.csproj", "eCommerce.Users.Core/"]
-RUN dotnet restore "eCommerce.Users.API/eCommerce.Users.API.csproj"
+COPY ["eCommerce.UsersService/eCommerce.Users.API/eCommerce.Users.API.csproj", "eCommerce.UsersService/eCommerce.Users.API/"]
+COPY ["eCommerce.UsersService/eCommerce.Users.Infrastructure/eCommerce.Users.Infrastructure.csproj", "eCommerce.UsersService/eCommerce.Users.Infrastructure/"]
+COPY ["eCommerce.UsersService/eCommerce.Users.Core/eCommerce.Users.Core.csproj", "eCommerce.UsersService/eCommerce.Users.Core/"]
+RUN dotnet restore "eCommerce.UsersService/eCommerce.Users.API/eCommerce.Users.API.csproj"
 COPY . .
-WORKDIR "/src/eCommerce.Users.API"
+WORKDIR "/src/eCommerce.UsersService/eCommerce.Users.API"
 RUN dotnet build "eCommerce.Users.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

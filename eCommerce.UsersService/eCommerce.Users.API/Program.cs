@@ -1,3 +1,4 @@
+using eCommerce.Users.Infrastructure.Extensions;
 using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +31,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    await app.InitialiseDatabaseAsync();
     app.UseSwagger();
     app.UseSwaggerUI();
 }

@@ -12,7 +12,7 @@ using eCommerce.Users.Infrastructure.Data;
 namespace eCommerce.Users.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(UsersContext))]
-    [Migration("20250109204048_Initial")]
+    [Migration("20250113222444_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,29 +25,23 @@ namespace eCommerce.Users.Infrastructure.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("eCommerce.Core.Entities.AppUser", b =>
+            modelBuilder.Entity("eCommerce.Users.Core.Entities.AppUser", b =>
                 {
                     b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Gender")
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
 
                     b.Property<string>("PersonName")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
 
                     b.HasKey("UserId");
 

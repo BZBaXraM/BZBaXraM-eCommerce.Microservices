@@ -16,10 +16,10 @@ namespace eCommerce.Users.Infrastructure.Data.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Password = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    PersonName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    Gender = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: true)
+                    Email = table.Column<string>(type: "text", nullable: true),
+                    Password = table.Column<string>(type: "text", nullable: true),
+                    PersonName = table.Column<string>(type: "text", nullable: true),
+                    Gender = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

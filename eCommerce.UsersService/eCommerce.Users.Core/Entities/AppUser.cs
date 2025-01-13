@@ -1,8 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace eCommerce.Users.Core.Entities;
 
 public class AppUser
 {
-    public Guid UserId { get; set; }
+    [Key] public Guid UserId { get; set; }
     public string? Email { get; set; }
     public string? Password { get; set; }
     public string? PersonName { get; set; }

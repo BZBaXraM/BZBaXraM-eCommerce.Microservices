@@ -1,0 +1,68 @@
+services:
+  mysql-container:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: eCommerceProducts
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - ecommerce-network
+    hostname: mysql-host-products-microservice
+  
+  products-services:
+    image: ${DOCKER_REGISTRY-}products-microservice
+    build:
+      context: .
+      dockerfile: eCommerce.ProductsService/eCommerce.Products.API/Dockerfile
+    environment:
+      MYSQL_HOST: mysql-host-products-microservice
+      MYSQL_PASSWORD: 12345678
+      MYSQL_DATABASE: eCommerceProducts
+    ports:
+      - "8080:8080"
+    networks:
+      - ecommerce-network
+    depends_on:
+      - mysql-container
+
+  postgres-container:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=eCommerceUsers
+    restart: always
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - ecommerce-network
+  
+  users-services:
+    image: ${DOCKER_REGISTRY-}users-microservice
+    build:
+      context: .
+      dockerfile: eCommerce.UsersService/eCommerce.Users.API/Dockerfile
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=eCommerceUsers
+    ports:
+      - "6000:8080"
+    networks:
+      - ecommerce-network
+    depends_on:
+      - postgres-container
+
+networks:
+  ecommerce-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  postgres_data:
