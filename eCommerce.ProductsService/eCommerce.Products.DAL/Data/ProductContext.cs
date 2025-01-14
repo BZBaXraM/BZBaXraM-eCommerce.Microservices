@@ -9,6 +9,13 @@ public class ProductContext(DbContextOptions<ProductContext> options) : DbContex
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.HasKey(e => e.ProductId);
+            entity.Property(e => e.Name).IsRequired();
+            entity.Property(e => e.Category).IsRequired();
+            entity.Property(e => e.UnitPrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.QuantityInStock).IsRequired();
+        });
     }
 }

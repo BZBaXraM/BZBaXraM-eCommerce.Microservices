@@ -11,7 +11,7 @@ using eCommerce.Products.DAL.Data;
 namespace eCommerce.Products.DAL.Data.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    [Migration("20250113173210_Initial")]
+    [Migration("20250114215025_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -36,11 +36,11 @@ namespace eCommerce.Products.DAL.Data.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("QuantityInStock")
+                    b.Property<int>("QuantityInStock")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.HasKey("ProductId");
 

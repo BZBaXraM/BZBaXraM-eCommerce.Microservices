@@ -6,7 +6,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<UsersContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"), b => b.EnableRetryOnFailure());
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
         });
 
         services.AddScoped<IUsersRepository, UsersRepository>();

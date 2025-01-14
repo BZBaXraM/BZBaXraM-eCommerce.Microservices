@@ -13,10 +13,12 @@ public static class DependencyInjection
         var connectionStringTemplate = configuration.GetConnectionString("DefaultConnection")!;
         var connectionString = connectionStringTemplate
             .Replace("$MYSQL_HOST", Environment.GetEnvironmentVariable("MYSQL_HOST"))
-            .Replace("$MYSQL_PASSWORD", Environment.GetEnvironmentVariable("MYSQL_PASSWORD"));
+            .Replace("$MYSQL_PASSWORD", Environment.GetEnvironmentVariable("MYSQL_PASSWORD"))
+            .Replace("$MYSQL_DATABASE", Environment.GetEnvironmentVariable("MYSQL_DATABASE"))
+            .Replace("$MYSQL_PORT", Environment.GetEnvironmentVariable("MYSQL_PORT"))
+            .Replace("$MYSQL_USER", Environment.GetEnvironmentVariable("MYSQL_USER"));
 
         services.AddDbContext<ProductContext>(options => { options.UseMySQL(connectionString); });
-
         services.AddScoped<IProductsRepository, ProductRepository>();
 
         return services;

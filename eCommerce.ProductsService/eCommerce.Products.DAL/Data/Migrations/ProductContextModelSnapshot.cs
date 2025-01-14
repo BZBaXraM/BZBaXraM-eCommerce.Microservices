@@ -33,11 +33,11 @@ namespace eCommerce.Products.DAL.Data.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("QuantityInStock")
+                    b.Property<int>("QuantityInStock")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.HasKey("ProductId");
 

@@ -21,8 +21,8 @@ namespace eCommerce.Products.DAL.Data.Migrations
                     ProductId = table.Column<Guid>(type: "char(36)", nullable: false),
                     Name = table.Column<string>(type: "longtext", nullable: false),
                     Category = table.Column<string>(type: "longtext", nullable: false),
-                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    QuantityInStock = table.Column<int>(type: "int", nullable: true)
+                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    QuantityInStock = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

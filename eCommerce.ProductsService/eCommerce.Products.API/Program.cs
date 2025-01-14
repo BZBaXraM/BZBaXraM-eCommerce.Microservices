@@ -5,7 +5,6 @@ using eCommerce.Products.DAL;
 using eCommerce.Products.DAL.Extensions;
 using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
-using DependencyInjection = eCommerce.Products.DAL.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,9 +34,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+await app.InitialiseDatabaseAsync();
+
 if (app.Environment.IsDevelopment())
 {
-    await app.InitialiseDatabaseAsync();
     app.UseSwagger();
     app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "eCommerce Products API v1"); });
 }
