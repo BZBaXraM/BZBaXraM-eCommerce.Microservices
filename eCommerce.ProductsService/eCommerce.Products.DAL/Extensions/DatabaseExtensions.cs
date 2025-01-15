@@ -2,6 +2,7 @@ using eCommerce.Products.DAL.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace eCommerce.Products.DAL.Extensions;
 
@@ -9,12 +10,24 @@ public static class DatabaseExtensions
 {
     public static async Task InitialiseDatabaseAsync(this WebApplication app)
     {
-        using var scope = app.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ProductContext>();
+        try
+        {
+            using var scope = app.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ProductContext>();
 
-        await context.Database.MigrateAsync();
-        await SeedAsync(context);
+            Console.WriteLine("Starting database migration...");
+            await context.Database.MigrateAsync();
+            Console.WriteLine("Database migration completed.");
+
+            await SeedAsync(context);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during database initialization: {ex.Message}");
+            throw;
+        }
     }
+
 
     private static async Task SeedAsync(ProductContext context)
     {

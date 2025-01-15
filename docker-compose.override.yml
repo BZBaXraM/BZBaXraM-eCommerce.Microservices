@@ -1,55 +1,57 @@
 services:
-    mysql-container:
-        container_name: mysql-container
-        environment:
-            MYSQL_USER: user
-            MYSQL_ROOT_PASSWORD: admin
-            MYSQL_PASSWORD: admin123
-            MYSQL_DATABASE: eCommerceProducts
-        restart: always
-        ports:
-            - "3306:3306"
-
-    postgres-container:
-        container_name: postgres-container
-        environment:
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
-            - POSTGRES_DB=eCommerceUsers
-        restart: always
-        ports:
-            - "5433:5432"
-        volumes:
-            - postgres_data:/var/lib/postgresql/data/
-
-    products-services:
-        environment:
-            - ASPNETCORE_ENVIRONMENT=Development
-            - ASPNETCORE_HTTP_PORTS=8080
-            - ASPNETCORE_HTTPS_PORTS=8081
-            - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
-            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-            - ConnectionStrings__Database=Server=mysql-container;Port=3306;Database=eCommerceProducts;User ID=root;Password=admin
-        depends_on:
-            - mysql-container
-        ports:
-            - "6000:8080"
-            - "6061:8081"
-        volumes:
-            - ~/.aspnet/https:/https:ro
-
-    users-services:
-        environment:
-            - ASPNETCORE_ENVIRONMENT=Development
-            - ASPNETCORE_HTTP_PORTS=8080
-            - ASPNETCORE_HTTPS_PORTS=8081
-            - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
-            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-            - ConnectionStrings__Database=Server=postgres-container;Database=eCommerceUsers;Username=postgres;Password=postgres;Include Error Detail=true
-        depends_on:
-            - postgres-container
-        ports:
-            - "7000:8080"
-            - "7071:8081"
-        volumes:
-            - ~/.aspnet/https:/https:ro
+  mysql-container:
+    container_name: mysql-container
+    environment:
+      MYSQL_USER: user
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_PASSWORD: admin123
+      MYSQL_DATABASE: eCommerceProducts
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql/
+  
+  postgres-container:
+    container_name: postgres-container
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=eCommerceUsers
+    restart: always
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  
+  products-services:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__Database=Server=mysql-container;Port=3306;Database=eCommerceProducts;User ID=user;Password=admin123
+    depends_on:
+      - mysql-container
+    ports:
+      - "6000:8080"
+      - "6061:8081"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  
+  users-services:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__Database=Server=postgres-container;Database=eCommerceUsers;Username=postgres;Password=postgres;Include Error Detail=true
+    depends_on:
+      - postgres-container
+    ports:
+      - "7000:8080"
+      - "7071:8081"
+    volumes:
+      - ~/.aspnet/https:/https:ro

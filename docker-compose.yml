@@ -18,4 +18,5 @@ services:
       dockerfile: eCommerce.UsersService/eCommerce.Users.API/Dockerfile
 
 volumes:
+  mysql_data:
   postgres_data:

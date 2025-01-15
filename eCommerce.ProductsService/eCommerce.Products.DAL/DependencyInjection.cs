@@ -10,7 +10,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddDal(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<ProductContext>(options => { options.UseMySQL(configuration.GetConnectionString("Database")!); });
+        services.AddDbContext<ProductContext>(options =>
+        {
+            options.UseMySQL(configuration.GetConnectionString("Database")!);
+        });
         services.AddScoped<IProductsRepository, ProductRepository>();
 
         return services;

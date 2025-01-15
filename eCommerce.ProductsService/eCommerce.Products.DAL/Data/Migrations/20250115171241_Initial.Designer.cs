@@ -11,7 +11,7 @@ using eCommerce.Products.DAL.Data;
 namespace eCommerce.Products.DAL.Data.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    [Migration("20250114215025_Initial")]
+    [Migration("20250115171241_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
