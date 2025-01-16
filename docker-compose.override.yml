@@ -1,28 +1,27 @@
 services:
-  mysql-container:
-    container_name: mysql-container
+  products-db:
+    container_name: products-db
     environment:
-      MYSQL_USER: user
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_PASSWORD: admin123
-      MYSQL_DATABASE: eCommerceProducts
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=eCommerceProducts
     restart: always
     ports:
-      - "3306:3306"
+      - "5433:5432"
     volumes:
-      - mysql_data:/var/lib/mysql/
+      - products_data:/var/lib/postgresql/data/
   
-  postgres-container:
-    container_name: postgres-container
+  users-db:
+    container_name: users-db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=eCommerceUsers
     restart: always
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - users_data:/var/lib/postgresql/data/
   
   products-services:
     environment:
@@ -31,9 +30,9 @@ services:
       - ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      - ConnectionStrings__Database=Server=mysql-container;Port=3306;Database=eCommerceProducts;User ID=user;Password=admin123
+      - ConnectionStrings__Database=Server=products-db;Database=eCommerceProducts;Username=postgres;Password=postgres;Include Error Detail=true
     depends_on:
-      - mysql-container
+      - products-db
     ports:
       - "6000:8080"
       - "6061:8081"
@@ -47,9 +46,9 @@ services:
       - ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      - ConnectionStrings__Database=Server=postgres-container;Database=eCommerceUsers;Username=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=users-db;Database=eCommerceUsers;Username=postgres;Password=postgres;Include Error Detail=true
     depends_on:
-      - postgres-container
+      - users-db
     ports:
       - "7000:8080"
       - "7071:8081"

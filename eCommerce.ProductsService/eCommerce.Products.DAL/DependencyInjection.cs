@@ -12,8 +12,9 @@ public static class DependencyInjection
     {
         services.AddDbContext<ProductContext>(options =>
         {
-            options.UseMySQL(configuration.GetConnectionString("Database")!);
+            options.UseNpgsql(configuration.GetConnectionString("Database"));
         });
+
         services.AddScoped<IProductsRepository, ProductRepository>();
 
         return services;
