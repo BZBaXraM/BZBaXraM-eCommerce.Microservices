@@ -1,5 +1,6 @@
 using eCommerce.Orders.API.Middlewares;
 using eCommerce.Orders.BLL;
+using eCommerce.Orders.BLL.Clients;
 using eCommerce.Orders.DAL;
 using FluentValidation.AspNetCore;
 
@@ -14,6 +15,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddHttpClient<UsersMicroserviceClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7221");
+});
 
 builder.Services.AddCors(options =>
 {

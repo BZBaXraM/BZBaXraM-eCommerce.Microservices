@@ -17,7 +17,7 @@ public class ProductAPIEndpoints : ICarterModule
 
         app.MapGet("/api/products/search/product-id/{id:guid}", async (IProductsService service, Guid id) =>
         {
-            var product = await service.GetProductByIdAsync(id);
+            var product = await service.GetProductByCondition(p => p.ProductId == id);
 
             return product;
         });

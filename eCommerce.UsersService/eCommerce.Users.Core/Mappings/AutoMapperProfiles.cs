@@ -1,6 +1,3 @@
-using eCommerce.Users.Core.DTOs;
-using eCommerce.Users.Core.Entities;
-
 namespace eCommerce.Users.Core.Mappings;
 
 public class AutoMapperProfiles : Profile
@@ -18,7 +15,16 @@ public class AutoMapperProfiles : Profile
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.PersonName, opt => opt.MapFrom(src => src.PersonName))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.ToString()))
-            .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
-            ;
+            .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
+
+        CreateMap<AppUser, UserDto>()
+            .ForMember(des => des.UserId, opt
+                => opt.MapFrom(src => src.UserId))
+            .ForMember(des => des.Email, opt
+                => opt.MapFrom(src => src.Email))
+            .ForMember(des => des.PersonName, opt
+                => opt.MapFrom(src => src.PersonName))
+            .ForMember(des => des.Gender, opt
+                => opt.MapFrom(src => src.Gender));
     }
 }

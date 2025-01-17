@@ -1,5 +1,3 @@
-using eCommerce.Users.Infrastructure.Data;
-
 namespace eCommerce.Users.Infrastructure.Repositories;
 
 internal class UsersRepository(UsersContext context) : IUsersRepository
@@ -20,5 +18,12 @@ internal class UsersRepository(UsersContext context) : IUsersRepository
         var users = await context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
 
         return users ?? null;
+    }
+
+    public async Task<AppUser?> GetUserByUserIdAsync(Guid userId)
+    {
+        var user = await context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+        return user ?? null;
     }
 }

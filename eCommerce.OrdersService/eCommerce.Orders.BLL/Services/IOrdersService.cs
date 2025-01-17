@@ -1,4 +1,4 @@
-using eCommerce.Orders.DAL.DTOs;
+using eCommerce.Orders.BLL.DTOs;
 using eCommerce.Orders.DAL.Entities;
 using MongoDB.Driver;
 

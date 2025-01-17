@@ -1,7 +1,3 @@
-using eCommerce.Users.Core.DTOs;
-using eCommerce.Users.Core.Entities;
-using eCommerce.Users.Core.Repository;
-
 namespace eCommerce.Users.Core.Services;
 
 internal class UsersService(IUsersRepository usersRepository, IMapper mapper) : IUsersService
@@ -41,5 +37,12 @@ internal class UsersService(IUsersRepository usersRepository, IMapper mapper) : 
                 {
                     Success = true, Token = "token"
                 };
+    }
+
+    public async Task<UserDto> GetUserByUserIdAsync(Guid userId)
+    {
+        var user = await usersRepository.GetUserByUserIdAsync(userId);
+
+        return mapper.Map<UserDto>(user);
     }
 }

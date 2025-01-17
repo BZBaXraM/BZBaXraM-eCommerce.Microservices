@@ -1,3 +1,5 @@
+# docker-compose.override.yml is used to override the docker-compose.yml file.
+
 services:
   products-db:
     container_name: products-db
@@ -22,6 +24,15 @@ services:
       - "5434:5432"
     volumes:
       - users_data:/var/lib/postgresql/data/
+  
+  order-db:
+    container_name: order-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - ../order-db:/docker-entrypoint-initdb.d
+    networks:
+      - orders-mongo-network
   
   products-services:
     environment:
@@ -54,3 +65,27 @@ services:
       - "7071:8081"
     volumes:
       - ~/.aspnet/https:/https:ro
+  
+  order-services:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - MONGODB_HOST=order-db
+      - UsersMicroserviceName=localhost
+      - UsersMicroservicePort=7071
+    depends_on:
+      - order-db
+    ports:
+      - "9090:8080"
+      - "9091:8081"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - orders-mongo-network
+
+networks:
+  orders-mongo-network:
+    driver: bridge

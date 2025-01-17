@@ -1,9 +1,14 @@
+# docker-compose.yml
+
 services:
   products-db:
     image: postgres:latest
   
   users-db:
     image: postgres:latest
+  
+  order-db:
+    image: mongo:latest
   
   products-services:
     image: ${DOCKER_REGISTRY-}products-microservice
@@ -16,6 +21,12 @@ services:
     build:
       context: .
       dockerfile: eCommerce.UsersService/eCommerce.Users.API/Dockerfile
+  
+  order-services:
+    image: ${DOCKER_REGISTRY-}order-microservice
+    build:
+      context: .
+      dockerfile: eCommerce.OrdersService/eCommerce.Orders.API/Dockerfile
 
 volumes:
   products_data:

@@ -25,25 +25,6 @@ public class ProductsService(
         }).ToList();
     }
 
-    public async Task<ProductResponse?> GetProductByIdAsync(Guid productId)
-    {
-        var product = await repository.GetProductByIdAsync(productId);
-        if (product == null)
-        {
-            return null;
-        }
-
-        return new ProductResponse
-        {
-            ProductId = product.ProductId,
-            Name = product.Name,
-            Category = product.Category,
-            UnitPrice = product.UnitPrice,
-            QuantityInStock = product.QuantityInStock,
-            IsSuccess = true
-        };
-    }
-
     public async Task<IReadOnlyList<ProductResponse?>> GetProductByCondition(
         Expression<Func<Product, bool>> conditionExpression)
     {

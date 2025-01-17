@@ -1,5 +1,5 @@
 using AutoMapper;
-using eCommerce.Orders.DAL.DTOs;
+using eCommerce.Orders.BLL.DTOs;
 using eCommerce.Orders.DAL.Entities;
 
 namespace eCommerce.Orders.BLL.Mappings;

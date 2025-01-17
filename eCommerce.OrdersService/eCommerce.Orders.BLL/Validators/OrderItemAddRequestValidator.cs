@@ -1,4 +1,4 @@
-using eCommerce.Orders.DAL.DTOs;
+using eCommerce.Orders.BLL.DTOs;
 using FluentValidation;
 
 namespace eCommerce.Orders.BLL.Validators;

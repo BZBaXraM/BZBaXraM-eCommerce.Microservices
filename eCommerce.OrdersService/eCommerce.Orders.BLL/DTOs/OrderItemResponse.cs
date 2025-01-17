@@ -1,4 +1,4 @@
-namespace eCommerce.Orders.DAL.DTOs;
+namespace eCommerce.Orders.BLL.DTOs;
 
 public class OrderItemResponse
 {

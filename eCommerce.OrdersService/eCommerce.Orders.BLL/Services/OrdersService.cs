@@ -1,5 +1,6 @@
 using AutoMapper;
-using eCommerce.Orders.DAL.DTOs;
+using eCommerce.Orders.BLL.Clients;
+using eCommerce.Orders.BLL.DTOs;
 using eCommerce.Orders.DAL.Entities;
 using eCommerce.Orders.DAL.Repositories;
 using FluentValidation;
@@ -13,7 +14,8 @@ public class OrdersService(
     IValidator<OrderAddRequest?> orderAddRequestValidator,
     IValidator<OrderItemAddRequest> orderItemAddRequestValidator,
     IValidator<OrderUpdateRequest> orderUpdateRequestValidator,
-    IValidator<OrderItemUpdateRequest> orderItemUpdateRequestValidator)
+    IValidator<OrderItemUpdateRequest> orderItemUpdateRequestValidator,
+    UsersMicroserviceClient usersMicroserviceClient)
     : IOrdersService
 {
     public async Task<OrderResponse?> AddOrderAsync(OrderAddRequest? orderAddRequest)
@@ -59,6 +61,13 @@ public class OrdersService(
         if (addedOrder == null)
         {
             return null;
+        }
+
+        var user = await usersMicroserviceClient.GetUserByIdAsync(addedOrder.UserId);
+
+        if (user == null)
+        {
+            throw new ArgumentException("Invalid user ID");
         }
 
         var addedOrderResponse = mapper.Map<OrderResponse>(addedOrder);
@@ -116,6 +125,13 @@ public class OrdersService(
             return null;
         }
 
+        var user = await usersMicroserviceClient.GetUserByIdAsync(updatedOrder.UserId);
+
+        if (user == null)
+        {
+            throw new ArgumentException("Invalid user id");
+        }
+
         var updatedOrderResponse = mapper.Map<OrderResponse>(updatedOrder);
 
         return updatedOrderResponse;
@@ -154,7 +170,7 @@ public class OrdersService(
         var orders = await ordersRepository.GetOrdersByCondition(filter);
 
         var orderResponses = mapper.Map<IEnumerable<OrderResponse>>(orders);
-        
+
         return orderResponses.ToList();
     }
 
