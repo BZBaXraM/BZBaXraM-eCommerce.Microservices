@@ -1,9 +1,3 @@
-using eCommerce.Orders.BLL.DTOs;
-using eCommerce.Orders.BLL.Services;
-using eCommerce.Orders.DAL.Entities;
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
-
 namespace eCommerce.Orders.API.Controllers;
 
 [Route("api/[controller]")]

@@ -1,9 +1,3 @@
-using eCommerce.Orders.API.Middlewares;
-using eCommerce.Orders.BLL;
-using eCommerce.Orders.BLL.Clients;
-using eCommerce.Orders.DAL;
-using FluentValidation.AspNetCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddBll(builder.Configuration);
@@ -18,7 +12,18 @@ builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddHttpClient<UsersMicroserviceClient>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7221");
+    client.BaseAddress = new Uri("https://localhost:7071/");
+}).ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+});
+
+builder.Services.AddHttpClient<ProductsMicroserviceClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:6061/");
+}).ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
 });
 
 builder.Services.AddCors(options =>

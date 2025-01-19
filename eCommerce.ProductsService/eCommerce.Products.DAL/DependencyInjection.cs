@@ -1,9 +1,3 @@
-using eCommerce.Products.DAL.Data;
-using eCommerce.Products.DAL.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace eCommerce.Products.DAL;
 
 public static class DependencyInjection

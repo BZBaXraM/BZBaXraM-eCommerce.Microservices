@@ -1,6 +1,3 @@
-using eCommerce.Products.DAL.Entities;
-using Microsoft.EntityFrameworkCore;
-
 namespace eCommerce.Products.DAL.Data;
 
 public class ProductContext(DbContextOptions<ProductContext> options) : DbContext(options)

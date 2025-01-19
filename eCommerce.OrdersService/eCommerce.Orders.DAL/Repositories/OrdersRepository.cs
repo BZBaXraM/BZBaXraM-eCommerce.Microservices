@@ -1,6 +1,3 @@
-using eCommerce.Orders.DAL.Entities;
-using MongoDB.Driver;
-
 namespace eCommerce.Orders.DAL.Repositories;
 
 public class OrdersRepository(IMongoDatabase mongoDatabase) : IOrdersRepository

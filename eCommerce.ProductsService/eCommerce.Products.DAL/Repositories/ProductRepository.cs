@@ -1,8 +1,3 @@
-using System.Linq.Expressions;
-using eCommerce.Products.DAL.Data;
-using eCommerce.Products.DAL.Entities;
-using Microsoft.EntityFrameworkCore;
-
 namespace eCommerce.Products.DAL.Repositories;
 
 public class ProductRepository(ProductContext context) : IProductsRepository

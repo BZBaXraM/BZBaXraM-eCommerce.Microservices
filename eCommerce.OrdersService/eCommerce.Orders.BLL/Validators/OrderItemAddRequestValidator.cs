@@ -1,6 +1,3 @@
-using eCommerce.Orders.BLL.DTOs;
-using FluentValidation;
-
 namespace eCommerce.Orders.BLL.Validators;
 
 public class OrderItemAddRequestValidator : AbstractValidator<OrderItemAddRequest>

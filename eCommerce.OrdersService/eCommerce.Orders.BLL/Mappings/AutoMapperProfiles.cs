@@ -1,7 +1,3 @@
-using AutoMapper;
-using eCommerce.Orders.BLL.DTOs;
-using eCommerce.Orders.DAL.Entities;
-
 namespace eCommerce.Orders.BLL.Mappings;
 
 public class AutoMapperProfiles : Profile
@@ -51,5 +47,9 @@ public class AutoMapperProfiles : Profile
             .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems))
             .ForMember(dest => dest._id, opt => opt.Ignore())
             .ForMember(dest => dest.TotalBill, opt => opt.Ignore());
+
+        CreateMap<ProductDto, OrderItemResponse>()
+            .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductName))
+            .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.Category));
     }
 }

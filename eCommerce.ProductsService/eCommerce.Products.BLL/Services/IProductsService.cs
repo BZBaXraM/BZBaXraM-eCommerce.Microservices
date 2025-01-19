@@ -1,7 +1,3 @@
-using System.Linq.Expressions;
-using eCommerce.Products.BLL.DTOs;
-using eCommerce.Products.DAL.Entities;
-
 namespace eCommerce.Products.BLL.Services;
 
 public interface IProductsService

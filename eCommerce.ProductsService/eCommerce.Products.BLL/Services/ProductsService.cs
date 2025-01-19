@@ -1,9 +1,3 @@
-using System.Linq.Expressions;
-using eCommerce.Products.BLL.DTOs;
-using eCommerce.Products.DAL.Entities;
-using eCommerce.Products.DAL.Repositories;
-using FluentValidation;
-
 namespace eCommerce.Products.BLL.Services;
 
 public class ProductsService(
@@ -17,11 +11,10 @@ public class ProductsService(
         return products.Select(p => new ProductResponse
         {
             ProductId = p!.ProductId,
-            Name = p.Name,
+            ProductName = p.Name,
             Category = p.Category,
             UnitPrice = p.UnitPrice,
             QuantityInStock = p.QuantityInStock,
-            IsSuccess = true
         }).ToList();
     }
 
@@ -32,11 +25,10 @@ public class ProductsService(
         return products.Select(p => new ProductResponse
         {
             ProductId = p!.ProductId,
-            Name = p.Name,
+            ProductName = p.Name,
             Category = p.Category,
             UnitPrice = p.UnitPrice,
             QuantityInStock = p.QuantityInStock,
-            IsSuccess = true
         }).ToList();
     }
 
@@ -60,11 +52,10 @@ public class ProductsService(
         return new ProductResponse
         {
             ProductId = addedProduct!.ProductId,
-            Name = addedProduct.Name,
+            ProductName = addedProduct.Name,
             Category = addedProduct.Category,
             UnitPrice = addedProduct.UnitPrice,
             QuantityInStock = addedProduct.QuantityInStock,
-            IsSuccess = true
         };
     }
 
@@ -89,17 +80,23 @@ public class ProductsService(
         return new ProductResponse
         {
             ProductId = updatedProduct!.ProductId,
-            Name = updatedProduct.Name,
+            ProductName = updatedProduct.Name,
             Category = updatedProduct.Category,
             UnitPrice = updatedProduct.UnitPrice,
             QuantityInStock = updatedProduct.QuantityInStock,
-            IsSuccess = true
         };
     }
 
     public async Task<bool> DeleteProductAsync(Guid productId)
     {
         var isDeleted = await repository.DeleteProductAsync(productId);
+        
+        if (!isDeleted)
+        {
+            throw new ArgumentException("Invalid Product ID");
+        }
+
+
         return isDeleted;
     }
 }

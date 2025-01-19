@@ -1,6 +1,3 @@
-using System.Linq.Expressions;
-using eCommerce.Products.DAL.Entities;
-
 namespace eCommerce.Products.DAL.Repositories;
 
 public interface IProductsRepository

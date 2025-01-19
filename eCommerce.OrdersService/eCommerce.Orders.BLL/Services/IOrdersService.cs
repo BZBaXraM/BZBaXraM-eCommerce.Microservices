@@ -1,7 +1,3 @@
-using eCommerce.Orders.BLL.DTOs;
-using eCommerce.Orders.DAL.Entities;
-using MongoDB.Driver;
-
 namespace eCommerce.Orders.BLL.Services;
 
 public interface IOrdersService

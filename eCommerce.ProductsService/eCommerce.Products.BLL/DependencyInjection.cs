@@ -1,8 +1,3 @@
-using eCommerce.Products.BLL.Services;
-using eCommerce.Products.BLL.Validators;
-using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace eCommerce.Products.BLL;
 
 public static class DependencyInjection

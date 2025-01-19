@@ -1,5 +1,3 @@
-# docker-compose.yml
-
 services:
   products-db:
     image: postgres:latest

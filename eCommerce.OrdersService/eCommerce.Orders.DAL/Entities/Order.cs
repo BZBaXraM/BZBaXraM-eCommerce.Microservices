@@ -1,6 +1,3 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-
 namespace eCommerce.Orders.DAL.Entities;
 
 public class Order

@@ -1,11 +1,3 @@
-using Carter;
-using eCommerce.Products.API.Middlewares;
-using eCommerce.Products.BLL;
-using eCommerce.Products.DAL;
-using eCommerce.Products.DAL.Extensions;
-using FluentValidation.AspNetCore;
-using Microsoft.OpenApi.Models;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDal(builder.Configuration);

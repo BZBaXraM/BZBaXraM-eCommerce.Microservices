@@ -1,6 +1,3 @@
-using eCommerce.Products.BLL.DTOs;
-using FluentValidation;
-
 namespace eCommerce.Products.BLL.Validators;
 
 public class ProductUpdateRequestValidator : AbstractValidator<ProductUpdateRequest>

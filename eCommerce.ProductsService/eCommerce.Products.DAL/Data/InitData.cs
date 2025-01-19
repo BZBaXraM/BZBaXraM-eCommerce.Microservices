@@ -1,5 +1,3 @@
-using eCommerce.Products.DAL.Entities;
-
 namespace eCommerce.Products.DAL.Data;
 
 public static class InitData

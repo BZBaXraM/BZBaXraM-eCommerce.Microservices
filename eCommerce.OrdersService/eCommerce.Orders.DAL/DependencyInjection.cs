@@ -1,8 +1,3 @@
-using eCommerce.Orders.DAL.Repositories;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Driver;
-
 namespace eCommerce.Orders.DAL;
 
 public static class DependencyInjection

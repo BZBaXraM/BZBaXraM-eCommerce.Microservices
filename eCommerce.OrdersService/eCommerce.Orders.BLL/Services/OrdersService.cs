@@ -1,11 +1,3 @@
-using AutoMapper;
-using eCommerce.Orders.BLL.Clients;
-using eCommerce.Orders.BLL.DTOs;
-using eCommerce.Orders.DAL.Entities;
-using eCommerce.Orders.DAL.Repositories;
-using FluentValidation;
-using MongoDB.Driver;
-
 namespace eCommerce.Orders.BLL.Services;
 
 public class OrdersService(
@@ -15,7 +7,8 @@ public class OrdersService(
     IValidator<OrderItemAddRequest> orderItemAddRequestValidator,
     IValidator<OrderUpdateRequest> orderUpdateRequestValidator,
     IValidator<OrderItemUpdateRequest> orderItemUpdateRequestValidator,
-    UsersMicroserviceClient usersMicroserviceClient)
+    UsersMicroserviceClient usersMicroserviceClient,
+    ProductsMicroserviceClient productsMicroserviceClient)
     : IOrdersService
 {
     public async Task<OrderResponse?> AddOrderAsync(OrderAddRequest? orderAddRequest)
@@ -44,6 +37,13 @@ public class OrdersService(
                 var errors = string.Join(", ",
                     orderItemAddRequestValidationResult.Errors.Select(temp => temp.ErrorMessage));
                 throw new ArgumentException(errors);
+            }
+
+            var product = await productsMicroserviceClient.GetProductByIdAsync(orderItemAddRequest.ProductId);
+
+            if (product == null)
+            {
+                throw new ArgumentException("Invalid product ID");
             }
         }
 
@@ -105,6 +105,13 @@ public class OrdersService(
 
                 throw new ArgumentException(errors);
             }
+
+            var product = await productsMicroserviceClient.GetProductByIdAsync(orderItemUpdateRequest.ProductId);
+
+            if (product == null)
+            {
+                throw new ArgumentException("Invalid product ID");
+            }
         }
 
 
@@ -148,7 +155,6 @@ public class OrdersService(
             return false;
         }
 
-
         var isDeleted = await ordersRepository.DeleteOrder(id);
         return isDeleted;
     }
@@ -181,6 +187,21 @@ public class OrdersService(
 
         var orderResponses = mapper.Map<IEnumerable<OrderResponse>>(orders);
 
-        return orderResponses.ToList();
+        IEnumerable<OrderResponse> responses = orderResponses.ToList();
+        foreach (var response in responses)
+        {
+            if (response is null) return null!;
+
+            foreach (var orderItem in response.OrderItems)
+            {
+                var product = await productsMicroserviceClient.GetProductByIdAsync(orderItem.ProductId);
+
+                if (product == null) return null!;
+
+                mapper.Map(product, orderItem);
+            }
+        }
+
+        return responses.ToList();
     }
 }

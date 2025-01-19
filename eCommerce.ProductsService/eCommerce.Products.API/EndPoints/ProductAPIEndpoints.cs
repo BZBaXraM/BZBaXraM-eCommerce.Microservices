@@ -1,7 +1,3 @@
-using Carter;
-using eCommerce.Products.BLL.DTOs;
-using eCommerce.Products.BLL.Services;
-
 namespace eCommerce.Products.API.EndPoints;
 
 public class ProductAPIEndpoints : ICarterModule

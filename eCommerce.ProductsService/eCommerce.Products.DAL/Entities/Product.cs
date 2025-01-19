@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace eCommerce.Products.DAL.Entities;
 
 public class Product
