@@ -49,7 +49,7 @@ public class AutoMapperProfiles : Profile
             .ForMember(dest => dest.TotalBill, opt => opt.Ignore());
 
         CreateMap<ProductDto, OrderItemResponse>()
-            .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductName))
-            .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.Category));
+            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductName))
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category));
     }
 }

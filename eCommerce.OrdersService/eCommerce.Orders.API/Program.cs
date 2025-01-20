@@ -12,7 +12,9 @@ builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddHttpClient<UsersMicroserviceClient>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7071/");
+    client.BaseAddress =
+        new Uri(
+            $"https://{builder.Configuration["UsersMicroserviceName"]}:{builder.Configuration["UsersMicroservicePort"]}/");
 }).ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
 {
     ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
@@ -20,7 +22,7 @@ builder.Services.AddHttpClient<UsersMicroserviceClient>(client =>
 
 builder.Services.AddHttpClient<ProductsMicroserviceClient>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:6061/");
+    client.BaseAddress = new Uri($"https://{builder.Configuration["ProductsMicroserviceName"]}:{builder.Configuration["ProductsMicroservicePort"]}/");
 }).ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
 {
     ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true

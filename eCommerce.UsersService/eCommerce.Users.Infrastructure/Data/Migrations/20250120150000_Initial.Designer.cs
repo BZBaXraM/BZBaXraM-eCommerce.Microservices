@@ -12,7 +12,7 @@ using eCommerce.Users.Infrastructure.Data;
 namespace eCommerce.Users.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(UsersContext))]
-    [Migration("20250119204022_Initial")]
+    [Migration("20250120150000_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

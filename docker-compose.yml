@@ -8,20 +8,20 @@ services:
   order-db:
     image: mongo:latest
   
-  products-services:
-    image: ${DOCKER_REGISTRY-}products-microservice
+  products-service:
+    image: ${DOCKER_REGISTRY-}products-service
     build:
       context: .
       dockerfile: eCommerce.ProductsService/eCommerce.Products.API/Dockerfile
   
-  users-services:
-    image: ${DOCKER_REGISTRY-}users-microservice
+  users-service:
+    image: ${DOCKER_REGISTRY-}users-service
     build:
       context: .
       dockerfile: eCommerce.UsersService/eCommerce.Users.API/Dockerfile
   
-  order-services:
-    image: ${DOCKER_REGISTRY-}order-microservice
+  order-service:
+    image: ${DOCKER_REGISTRY-}order-service
     build:
       context: .
       dockerfile: eCommerce.OrdersService/eCommerce.Orders.API/Dockerfile

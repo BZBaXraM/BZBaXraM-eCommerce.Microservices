@@ -22,4 +22,8 @@ RUN dotnet publish "eCommerce.Orders.API.csproj" -c $BUILD_CONFIGURATION -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV UsersMicroserviceName=localhost
+ENV UsersMicroservicePort=9090
+ENV ProductsMicroserviceName=localhost
+ENV ProductsMicroservicePort=8081
 ENTRYPOINT ["dotnet", "eCommerce.Orders.API.dll"]

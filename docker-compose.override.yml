@@ -10,7 +10,7 @@ services:
       - "5433:5432"
     volumes:
       - products_data:/var/lib/postgresql/data/
-  
+
   users-db:
     container_name: users-db
     environment:
@@ -22,7 +22,7 @@ services:
       - "5434:5432"
     volumes:
       - users_data:/var/lib/postgresql/data/
-  
+
   order-db:
     container_name: order-db
     ports:
@@ -31,8 +31,8 @@ services:
       - ../order-db:/docker-entrypoint-initdb.d
     networks:
       - orders-mongo-network
-  
-  products-services:
+
+  products-service:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
@@ -43,12 +43,12 @@ services:
     depends_on:
       - products-db
     ports:
-      - "6000:6000"
-      - "6061:6061"
+      - "6000:8080"
+      - "6061:8081"
     volumes:
       - ~/.aspnet/https:/https:ro
-  
-  users-services:
+
+  users-service:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
@@ -59,12 +59,12 @@ services:
     depends_on:
       - users-db
     ports:
-      - "7000:7000"
-      - "7071:7071"
+      - "7000:8080"
+      - "7071:9090"
     volumes:
       - ~/.aspnet/https:/https:ro
-  
-  order-services:
+
+  order-service:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
@@ -72,15 +72,15 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
       - MONGODB_HOST=order-db
-      - UsersMicroserviceName=localhost
-      - UsersMicroservicePort=7071
-      - ProductsMicroserviceName=localhost
-      - ProductsMicroservicePort=6061
+      - UsersMicroserviceName=users-service
+      - UsersMicroservicePort=9090
+      - ProductsMicroserviceName=products-service
+      - ProductsMicroservicePort=8081
     depends_on:
       - order-db
     ports:
-      - "9000:9000"
-      - "9091:9091"
+      - "9000:8080"
+      - "9091:8081"
     volumes:
       - ~/.aspnet/https:/https:ro
     networks:

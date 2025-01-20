@@ -7,4 +7,6 @@ global using eCommerce.Users.Core.DTOs;
 global using eCommerce.Users.Core.Mappings;
 global using eCommerce.Users.Core.Services;
 global using eCommerce.Users.Infrastructure;
+global using eCommerce.Users.Infrastructure.Extensions;
+global using FluentValidation.AspNetCore;
 global using Microsoft.AspNetCore.Mvc;

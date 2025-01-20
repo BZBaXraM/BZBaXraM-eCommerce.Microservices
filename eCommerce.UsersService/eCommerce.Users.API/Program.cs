@@ -1,6 +1,3 @@
-using eCommerce.Users.Infrastructure.Extensions;
-using FluentValidation.AspNetCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -32,7 +29,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    await app.InitialiseDatabaseAsync();
+    // await app.InitialiseDatabaseAsync();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -48,4 +45,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
