@@ -28,9 +28,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "UsersMicroserviceName": "localhost",
-        "UsersMicroservicePort": "9090",
+        "UsersMicroservicePort": "7221",
         "ProductsMicroserviceName": "localhost",
-        "ProductsMicroservicePort": "8081"
+        "ProductsMicroservicePort": "7030"
       }
     },
     "IIS Express": {
@@ -49,9 +49,9 @@
         "ASPNETCORE_HTTPS_PORTS": "8081",
         "ASPNETCORE_HTTP_PORTS": "8080",
         "UsersMicroserviceName": "localhost",
-        "UsersMicroservicePort": "9090",
+        "UsersMicroservicePort": "7071",
         "ProductsMicroserviceName": "localhost",
-        "ProductsMicroservicePort": "8080"
+        "ProductsMicroservicePort": "6061"
       },
       "publishAllPorts": true,
       "useSSL": true

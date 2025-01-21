@@ -3,11 +3,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDal(builder.Configuration);
 builder.Services.AddBll();
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddCarter();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddFluentValidationAutoValidation();
 
@@ -23,7 +22,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
     await app.InitialiseDatabaseAsync();
@@ -34,7 +32,9 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseCors();
+app.UseRouting();
 
-app.MapCarter();
+app.UseHttpsRedirection();
+app.MapControllers();
 
 await app.RunAsync();
