@@ -1,8 +1,8 @@
 namespace eCommerce.Orders.BLL.DTOs;
 
-public class OrderAddRequest
+public record OrderAddRequest(Guid UserId, DateTime OrderDate, List<OrderItemAddRequest> OrderItems)
 {
-    public Guid UserId { get; set; }
-    public DateTime OrderDate { get; set; }
-    public List<OrderItemAddRequest> OrderItems { get; set; } = [];
+    public OrderAddRequest(): this(default, default, default)
+    {
+    }
 }

@@ -1,3 +1,6 @@
+using System.Net;
+using Refit;
+
 namespace eCommerce.Orders.BLL.Services;
 
 public class OrdersService(
@@ -7,17 +10,13 @@ public class OrdersService(
     IValidator<OrderItemAddRequest> orderItemAddRequestValidator,
     IValidator<OrderUpdateRequest> orderUpdateRequestValidator,
     IValidator<OrderItemUpdateRequest> orderItemUpdateRequestValidator,
-    UsersMicroserviceClient usersMicroserviceClient,
-    ProductsMicroserviceClient productsMicroserviceClient)
+    IUsersMicroserviceClient usersMicroserviceClient,
+    IProductsMicroserviceClient productsMicroserviceClient)
     : IOrdersService
 {
     public async Task<OrderResponse?> AddOrderAsync(OrderAddRequest? orderAddRequest)
     {
-        if (orderAddRequest == null)
-        {
-            throw new ArgumentNullException(nameof(orderAddRequest));
-        }
-
+        ArgumentNullException.ThrowIfNull(orderAddRequest);
 
         var orderAddRequestValidationResult = await orderAddRequestValidator.ValidateAsync(orderAddRequest);
 
@@ -41,7 +40,7 @@ public class OrdersService(
 
             var product = await productsMicroserviceClient.GetProductByIdAsync(orderItemAddRequest.ProductId);
 
-            if (product == null)
+            if (product is null)
             {
                 throw new ArgumentException("Invalid product ID");
             }
@@ -58,14 +57,14 @@ public class OrdersService(
 
         var addedOrder = await ordersRepository.AddOrder(orderInput);
 
-        if (addedOrder == null)
+        if (addedOrder is null)
         {
             return null;
         }
 
         var user = await usersMicroserviceClient.GetUserByIdAsync(addedOrder.UserId);
 
-        if (user == null)
+        if (user is null)
         {
             throw new ArgumentException("Invalid user ID");
         }
@@ -78,11 +77,7 @@ public class OrdersService(
 
     public async Task<OrderResponse?> UpdateOrderAsync(OrderUpdateRequest orderUpdateRequest)
     {
-        if (orderUpdateRequest == null)
-        {
-            throw new ArgumentNullException(nameof(orderUpdateRequest));
-        }
-
+        ArgumentNullException.ThrowIfNull(orderUpdateRequest);
 
         var orderUpdateRequestValidationResult = await orderUpdateRequestValidator.ValidateAsync(orderUpdateRequest);
 
@@ -108,7 +103,7 @@ public class OrdersService(
 
             var product = await productsMicroserviceClient.GetProductByIdAsync(orderItemUpdateRequest.ProductId);
 
-            if (product == null)
+            if (product is null)
             {
                 throw new ArgumentException("Invalid product ID");
             }
@@ -123,18 +118,16 @@ public class OrdersService(
         }
 
         orderInput.TotalBill = orderInput.OrderItems.Sum(temp => temp.TotalPrice);
-
-
         var updatedOrder = await ordersRepository.UpdateOrder(orderInput);
 
-        if (updatedOrder == null)
+        if (updatedOrder is null)
         {
             return null;
         }
 
         var user = await usersMicroserviceClient.GetUserByIdAsync(updatedOrder.UserId);
 
-        if (user == null)
+        if (user is null)
         {
             throw new ArgumentException("Invalid user id");
         }
@@ -150,7 +143,7 @@ public class OrdersService(
         var filter = Builders<Order>.Filter.Eq(temp => temp.OrderId, id);
         var existingOrder = await ordersRepository.GetOrderByCondition(filter);
 
-        if (existingOrder == null)
+        if (existingOrder is null)
         {
             return false;
         }
@@ -163,10 +156,10 @@ public class OrdersService(
     public async Task<OrderResponse?> GetOrderByConditionAsync(FilterDefinition<Order> filter)
     {
         var order = await ordersRepository.GetOrderByCondition(filter);
-        if (order == null)
-            return null;
 
-        OrderResponse orderResponse = mapper.Map<OrderResponse>(order);
+        if (order is null) return null;
+
+        var orderResponse = mapper.Map<OrderResponse>(order);
         return orderResponse;
     }
 
@@ -181,27 +174,35 @@ public class OrdersService(
     }
 
 
-    public async Task<IReadOnlyList<OrderResponse?>> GetOrdersAsync()
+    public async Task<List<OrderResponse>> GetOrdersAsync()
     {
         var orders = await ordersRepository.GetOrders();
-
         var orderResponses = mapper.Map<IEnumerable<OrderResponse>>(orders);
+        var responses = orderResponses.ToList();
 
-        IEnumerable<OrderResponse> responses = orderResponses.ToList();
         foreach (var response in responses)
         {
-            if (response is null) return null!;
-
             foreach (var orderItem in response.OrderItems)
             {
                 var product = await productsMicroserviceClient.GetProductByIdAsync(orderItem.ProductId);
+                mapper.Map(product.FindAll(x => x.ProductId == orderItem.ProductId).FirstOrDefault()
+                           ?? new ProductDto(), orderItem);
+            }
 
-                if (product == null) return null!;
-
-                mapper.Map(product, orderItem);
+            try
+            {
+                var user = await usersMicroserviceClient.GetUserByIdAsync(response.UserId);
+                if (user is not null)
+                {
+                    mapper.Map(user, response);
+                }
+            }
+            catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
+            {
+                mapper.Map(new UserDto(), response);
             }
         }
 
-        return responses.ToList();
+        return responses;
     }
 }

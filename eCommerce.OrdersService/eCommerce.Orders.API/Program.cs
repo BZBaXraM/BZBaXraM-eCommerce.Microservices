@@ -1,32 +1,28 @@
+using System.Text.Json.Serialization;
+using eCommerce.Orders.API.Logs;
+using Refit;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddBll(builder.Configuration);
 builder.Services.AddDal(builder.Configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddFluentValidationAutoValidation();
 
-builder.Services.AddHttpClient<UsersMicroserviceClient>(client =>
-{
-    client.BaseAddress =
-        new Uri(
-            $"https://{builder.Configuration["UsersMicroserviceName"]}:{builder.Configuration["UsersMicroservicePort"]}/");
-}).ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
-{
-    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-});
+builder.Services.AddRefitClient<IUsersMicroserviceClient>()
+    .ConfigureHttpClient(c => { c.BaseAddress = new Uri(builder.Configuration["Api:Users"]!); })
+    .AddHttpMessageHandler(() => new LoggingHandler());
 
-builder.Services.AddHttpClient<ProductsMicroserviceClient>(client =>
-{
-    client.BaseAddress = new Uri($"https://{builder.Configuration["ProductsMicroserviceName"]}:{builder.Configuration["ProductsMicroservicePort"]}/");
-}).ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
-{
-    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-});
+builder.Services.AddRefitClient<IProductsMicroserviceClient>()
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.Configuration["Api:Products"]!))
+    .AddHttpMessageHandler(() => new LoggingHandler());
+
 
 builder.Services.AddCors(options =>
 {
@@ -38,6 +34,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddLogging();
 
 var app = builder.Build();
 

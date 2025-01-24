@@ -20,7 +20,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
             context.Response.StatusCode = 500;
             await context.Response.WriteAsJsonAsync(new
             {
-                Message = ex.Message,
+                ex.Message,
                 Type = ex.GetType().ToString()
             });
         }

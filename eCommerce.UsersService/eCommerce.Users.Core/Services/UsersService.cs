@@ -1,6 +1,6 @@
 namespace eCommerce.Users.Core.Services;
 
-internal class UsersService(IUsersRepository usersRepository, IMapper mapper) : IUsersService
+public class UsersService(IUsersRepository usersRepository, IMapper mapper) : IUsersService
 {
     public async Task<AuthResponse?> RegisterAsync(RegisterRequest request)
     {
@@ -44,5 +44,15 @@ internal class UsersService(IUsersRepository usersRepository, IMapper mapper) : 
         var user = await usersRepository.GetUserByUserIdAsync(userId);
 
         return mapper.Map<UserDto>(user);
+    }
+
+    public async Task<bool> DeleteUserAsync(Guid userId)
+    {
+        return await usersRepository.DeleteUserAsync(userId);
+    }
+
+    public async Task<IReadOnlyList<AppUser>> GetUsersAsync()
+    {
+        return await usersRepository.GetUsersAsync();
     }
 }

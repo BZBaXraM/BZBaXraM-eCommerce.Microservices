@@ -7,4 +7,6 @@ public class OrderResponse
     public DateTime OrderDate { get; set; }
     public decimal TotalBill { get; set; }
     public List<OrderItemResponse> OrderItems { get; set; } = [];
+    public string? Email { get; set; }
+    public string? PersonName { get; set; }
 }

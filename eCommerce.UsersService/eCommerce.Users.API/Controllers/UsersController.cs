@@ -4,15 +4,33 @@ namespace eCommerce.Users.API.Controllers;
 [ApiController]
 public class UsersController(IUsersService service) : ControllerBase
 {
+    [HttpGet]
+    public async Task<IActionResult> GetUsersAsync()
+    {
+        var users = await service.GetUsersAsync();
+
+        return Ok(users);
+    }
+
     [HttpGet("{userId:guid}")]
-    public async Task<IActionResult> GetUserByUserIdAsync(Guid userId)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<UserDto?> GetUserByUserIdAsync(Guid userId)
+    {
+        return await service.GetUserByUserIdAsync(userId);
+    }
+
+    [HttpDelete("{userId:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteUserAsync(Guid userId)
     {
         if (userId == Guid.Empty) return BadRequest("Invalid user id");
 
-        var user = await service.GetUserByUserIdAsync(userId);
+        var isDeleted = await service.DeleteUserAsync(userId);
 
-        if (user == null) return NotFound();
+        if (!isDeleted) return BadRequest("User not found");
 
-        return Ok(user);
+        return Ok();
     }
 }

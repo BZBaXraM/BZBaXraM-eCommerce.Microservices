@@ -1,8 +1,8 @@
 namespace eCommerce.Orders.BLL.DTOs;
 
-public class OrderItemAddRequest
+public record OrderItemAddRequest(Guid ProductId, decimal UnitPrice, int Quantity)
 {
-    public Guid ProductId { get; set; }
-    public decimal UnitPrice { get; set; }
-    public int Quantity { get; set; }
+    public OrderItemAddRequest() : this(default, default, default)
+    {
+    }
 }

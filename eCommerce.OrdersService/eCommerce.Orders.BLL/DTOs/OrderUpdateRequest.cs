@@ -1,9 +1,9 @@
 namespace eCommerce.Orders.BLL.DTOs;
 
-public class OrderUpdateRequest
+
+public record OrderUpdateRequest(Guid OrderId, Guid UserId, DateTime OrderDate, List<OrderItemUpdateRequest> OrderItems)
 {
-    public Guid OrderId { get; set; }
-    public Guid UserId { get; set; }
-    public DateTime OrderDate { get; set; }
-    public List<OrderItemUpdateRequest> OrderItems { get; set; } = [];
+    public OrderUpdateRequest() : this(default, default, default, default)
+    {
+    }
 }

@@ -60,7 +60,7 @@ services:
       - users-db
     ports:
       - "7000:8080"
-      - "7071:9090"
+      - "7071:8081"
     volumes:
       - ~/.aspnet/https:/https:ro
 

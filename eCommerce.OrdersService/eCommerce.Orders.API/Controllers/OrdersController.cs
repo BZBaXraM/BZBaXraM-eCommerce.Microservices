@@ -2,42 +2,51 @@ namespace eCommerce.Orders.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class OrdersController(IOrdersService service) : ControllerBase
+public class OrdersController(IOrdersService ordersService) : ControllerBase
 {
+    //GET: /api/Orders
     [HttpGet]
-    public async Task<IReadOnlyList<OrderResponse?>> GetOrders()
+    public async Task<IEnumerable<OrderResponse?>> Get()
     {
-        return await service.GetOrdersAsync();
+        return await ordersService.GetOrdersAsync();
     }
 
-    [HttpGet("search/orderId/{orderId:guid}")]
-    public async Task<OrderResponse?> GetOrderById(Guid orderId)
-    {
-        var filter = Builders<Order>.Filter.Eq(x => x.OrderId, orderId);
 
-        return await service.GetOrderByConditionAsync(filter);
+    //GET: /api/Orders/search/orderId/{orderID}
+    [HttpGet("search/orderId/{orderId}")]
+    public async Task<OrderResponse?> GetOrderByOrderId(Guid orderId)
+    {
+        var filter = Builders<Order>.Filter.Eq(temp => temp.OrderId, orderId);
+
+        return await ordersService.GetOrderByConditionAsync(filter);
     }
 
-    [HttpGet("search/productId/{productId:guid}")]
-    public async Task<IReadOnlyList<OrderResponse?>> GetOrdersByProductId(Guid productId)
+
+    //GET: /api/Orders/search/productId/{productID}
+    [HttpGet("search/productId/{productId}")]
+    public async Task<IEnumerable<OrderResponse?>> GetOrdersByProductId(Guid productId)
     {
         var filter = Builders<Order>.Filter.ElemMatch(temp => temp.OrderItems,
-            Builders<OrderItem>.Filter.Eq(tempProduct => tempProduct.ProductId, productId));
+            Builders<OrderItem>.Filter.Eq(tempProduct => tempProduct.ProductId, productId)
+        );
 
-        var orders = await service.GetOrdersByConditionAsync(filter);
-        return orders;
+        return await ordersService.GetOrdersByConditionAsync(filter);
     }
 
-    [HttpGet("/search/orderDate/{orderDate:datetime}")]
+
+    //GET: /api/Orders/search/orderDate/{orderDate}
+    [HttpGet("/search/orderDate/{orderDate}")]
     public async Task<IEnumerable<OrderResponse?>> GetOrdersByOrderDate(DateTime orderDate)
     {
         var filter = Builders<Order>.Filter.Eq(temp => temp.OrderDate.ToString("yyyy-MM-dd"),
-            orderDate.ToString("yyyy-MM-dd"));
+            orderDate.ToString("yyyy-MM-dd")
+        );
 
-        var orders = await service.GetOrdersByConditionAsync(filter);
-        return orders;
+        return await ordersService.GetOrdersByConditionAsync(filter);
     }
 
+
+    //POST api/Orders
     [HttpPost]
     public async Task<IActionResult> Post(OrderAddRequest? orderAddRequest)
     {
@@ -46,19 +55,19 @@ public class OrdersController(IOrdersService service) : ControllerBase
             return BadRequest("Invalid order data");
         }
 
-        OrderResponse? orderResponse = await service.AddOrderAsync(orderAddRequest);
+        var orderResponse = await ordersService.AddOrderAsync(orderAddRequest);
 
         if (orderResponse == null)
         {
             return Problem("Error in adding order");
         }
 
-
-        return Created($"api/Orders/search/orderId/{orderResponse.OrderId}", orderResponse);
+        return CreatedAtAction(nameof(GetOrderByOrderId), new { orderId = orderResponse.OrderId }, orderResponse);
     }
 
 
-    [HttpPut("{orderId:guid}")]
+    //PUT api/Orders/{orderID}
+    [HttpPut("{orderId}")]
     public async Task<IActionResult> Put(Guid orderId, OrderUpdateRequest? orderUpdateRequest)
     {
         if (orderUpdateRequest == null)
@@ -71,13 +80,19 @@ public class OrdersController(IOrdersService service) : ControllerBase
             return BadRequest("OrderID in the URL doesn't match with the OrderID in the Request body");
         }
 
-        var orderResponse = await service.UpdateOrderAsync(orderUpdateRequest);
+        OrderResponse? orderResponse = await ordersService.UpdateOrderAsync(orderUpdateRequest);
 
-        return orderResponse == null ? Problem("Error in updating order") : Ok(orderResponse);
+        if (orderResponse == null)
+        {
+            return Problem("Error in updating order");
+        }
+
+        return Ok(orderResponse);
     }
 
 
-    [HttpDelete("{orderId:guid}")]
+    //DELETE api/Orders/{orderID}
+    [HttpDelete("{orderId}")]
     public async Task<IActionResult> Delete(Guid orderId)
     {
         if (orderId == Guid.Empty)
@@ -85,8 +100,13 @@ public class OrdersController(IOrdersService service) : ControllerBase
             return BadRequest("Invalid order ID");
         }
 
-        var isDeleted = await service.DeleteOrderAsync(orderId);
+        var isDeleted = await ordersService.DeleteOrderAsync(orderId);
 
-        return !isDeleted ? Problem("Error in deleting order") : Ok(isDeleted);
+        if (!isDeleted)
+        {
+            return Problem("Error in deleting order");
+        }
+
+        return Ok(isDeleted);
     }
 }

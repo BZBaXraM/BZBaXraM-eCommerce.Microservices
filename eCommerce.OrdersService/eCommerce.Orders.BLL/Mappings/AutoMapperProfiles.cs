@@ -18,8 +18,7 @@ public class AutoMapperProfiles : Profile
             .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
             .ForMember(dest => dest.TotalPrice, opt => opt.Ignore())
             .ForMember(dest => dest._id, opt => opt.Ignore());
-
-
+        
         CreateMap<OrderItem, OrderItemResponse>()
             .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
             .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice))
@@ -51,5 +50,9 @@ public class AutoMapperProfiles : Profile
         CreateMap<ProductDto, OrderItemResponse>()
             .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductName))
             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category));
+        
+        CreateMap<UserDto, OrderResponse>()
+            .ForMember(dest => dest.PersonName, opt => opt.MapFrom(src => src.PersonName))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
     }
 }
