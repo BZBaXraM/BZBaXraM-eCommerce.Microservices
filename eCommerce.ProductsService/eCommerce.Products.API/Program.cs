@@ -34,7 +34,6 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseCors();
 app.UseRouting();
 
-app.UseHttpsRedirection();
 app.MapControllers();
 
 await app.RunAsync();

@@ -23,7 +23,7 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENV UsersMicroserviceName=localhost
-ENV UsersMicroservicePort=9090
+ENV UsersMicroservicePort=9000
 ENV ProductsMicroserviceName=localhost
-ENV ProductsMicroservicePort=8081
+ENV ProductsMicroservicePort=8080
 ENTRYPOINT ["dotnet", "eCommerce.Orders.API.dll"]

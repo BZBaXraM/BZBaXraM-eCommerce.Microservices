@@ -16,11 +16,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddRefitClient<IUsersMicroserviceClient>()
-    .ConfigureHttpClient(c => { c.BaseAddress = new Uri(builder.Configuration["Api:Users"]!); })
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress =
+            new Uri(
+                $"http://{builder.Configuration["UsersMicroserviceName"]}:{builder.Configuration["UsersMicroservicePort"]}");
+    })
     .AddHttpMessageHandler(() => new LoggingHandler());
 
 builder.Services.AddRefitClient<IProductsMicroserviceClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.Configuration["Api:Products"]!))
+    .ConfigureHttpClient(c =>
+        c.BaseAddress =
+            new Uri(
+                $"http://{builder.Configuration["ProductsMicroserviceName"]}:{builder.Configuration["ProductsMicroservicePort"]}"))
     .AddHttpMessageHandler(() => new LoggingHandler());
 
 
