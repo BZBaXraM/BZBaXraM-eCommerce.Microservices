@@ -18,9 +18,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "UsersMicroserviceName": "localhost",
-        "UsersMicroservicePort": "9111",
+        "UsersMicroservicePort": "9000",
         "ProductsMicroserviceName": "localhost",
-        "ProductsMicroservicePort": "8081"
+        "ProductsMicroservicePort": "8080"
       }
     },
     "https": {
@@ -44,21 +44,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
-    },
-    "Container (Dockerfile)": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "8081",
-        "ASPNETCORE_HTTP_PORTS": "8080",
-        "UsersMicroserviceName": "localhost",
-        "UsersMicroservicePort": "7071",
-        "ProductsMicroserviceName": "localhost",
-        "ProductsMicroservicePort": "6061"
-      },
-      "publishAllPorts": true,
-      "useSSL": true
     }
   }
 }
