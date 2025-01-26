@@ -1,6 +1,3 @@
-using System.Net;
-using Refit;
-
 namespace eCommerce.Orders.BLL.Services;
 
 public class OrdersService(
@@ -69,9 +66,7 @@ public class OrdersService(
             throw new ArgumentException("Invalid user ID");
         }
 
-        var addedOrderResponse = mapper.Map<OrderResponse>(addedOrder);
-
-        return addedOrderResponse;
+        return mapper.Map<OrderResponse>(addedOrder);
     }
 
 
@@ -148,8 +143,7 @@ public class OrdersService(
             return false;
         }
 
-        var isDeleted = await ordersRepository.DeleteOrder(id);
-        return isDeleted;
+        return await ordersRepository.DeleteOrder(id);
     }
 
 
@@ -157,10 +151,7 @@ public class OrdersService(
     {
         var order = await ordersRepository.GetOrderByCondition(filter);
 
-        if (order is null) return null;
-
-        var orderResponse = mapper.Map<OrderResponse>(order);
-        return orderResponse;
+        return order is null ? null : mapper.Map<OrderResponse>(order);
     }
 
 
@@ -189,17 +180,14 @@ public class OrdersService(
                            ?? new ProductDto(), orderItem);
             }
 
-            try
+            var user = await usersMicroserviceClient.GetUserByIdAsync(response.UserId);
+            if (user is not null)
             {
-                var user = await usersMicroserviceClient.GetUserByIdAsync(response.UserId);
-                if (user is not null)
-                {
-                    mapper.Map(user, response);
-                }
+                mapper.Map(user, response);
             }
-            catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.NoContent)
+            else
             {
-                mapper.Map(new UserDto(), response);
+                throw new ArgumentException("Invalid user ID");
             }
         }
 

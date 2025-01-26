@@ -1,10 +1,6 @@
-using System.Text.Json.Serialization;
-using eCommerce.Orders.API.Logs;
-using Refit;
-
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddBll(builder.Configuration);
+builder.Services.AddBll();
 builder.Services.AddDal(builder.Configuration);
 
 builder.Services.AddControllers()
@@ -22,14 +18,14 @@ builder.Services.AddRefitClient<IUsersMicroserviceClient>()
             new Uri(
                 $"http://{builder.Configuration["UsersMicroserviceName"]}:{builder.Configuration["UsersMicroservicePort"]}");
     })
-    .AddHttpMessageHandler(() => new LoggingHandler());
+    .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUsersMicroservicePolicies>()
+        .GetRetryPolicy());
 
 builder.Services.AddRefitClient<IProductsMicroserviceClient>()
     .ConfigureHttpClient(c =>
         c.BaseAddress =
             new Uri(
-                $"http://{builder.Configuration["ProductsMicroserviceName"]}:{builder.Configuration["ProductsMicroservicePort"]}"))
-    .AddHttpMessageHandler(() => new LoggingHandler());
+                $"http://{builder.Configuration["ProductsMicroserviceName"]}:{builder.Configuration["ProductsMicroservicePort"]}"));
 
 
 builder.Services.AddCors(options =>
@@ -58,7 +54,6 @@ app.MapControllers();
 
 app.UseRouting();
 
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

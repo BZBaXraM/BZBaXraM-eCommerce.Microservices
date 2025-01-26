@@ -1,5 +1,3 @@
-using Refit;
-
 namespace eCommerce.Orders.BLL.Clients;
 
 public interface IProductsMicroserviceClient
