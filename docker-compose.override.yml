@@ -10,8 +10,6 @@ services:
       - "5433:5432"
     volumes:
       - products_data:/var/lib/postgresql/data/
-    networks:
-      - products-postgres-network
 
   users-db:
     container_name: users-db
@@ -24,8 +22,6 @@ services:
       - "5434:5432"
     volumes:
       - users_data:/var/lib/postgresql/data/
-    networks:
-      - users-postgres-network
 
   order-db:
     container_name: order-db
@@ -33,14 +29,12 @@ services:
       - "27017:27017"
     volumes:
       - ../order-db:/docker-entrypoint-initdb.d
-    networks:
-      - orders-mongo-network
 
   products-service:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-#      - ASPNETCORE_HTTPS_PORTS=8081
+      #      - ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
       - ConnectionStrings__Database=Server=products-db;Database=eCommerceProducts;Username=postgres;Password=postgres;Include Error Detail=true
@@ -51,15 +45,12 @@ services:
     #      - "6061:8081"
     volumes:
       - ~/.aspnet/https:/https:ro
-    networks:
-      - products-postgres-network
-      - ecommerce-network
 
   users-service:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=9000
-#      - ASPNETCORE_HTTPS_PORTS=8081
+      #      - ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
       - ConnectionStrings__Database=Server=users-db;Database=eCommerceUsers;Username=postgres;Password=postgres;Include Error Detail=true
@@ -70,15 +61,12 @@ services:
     #      - "7071:8081"
     volumes:
       - ~/.aspnet/https:/https:ro
-    networks:
-      - users-postgres-network
-      - ecommerce-network
 
   order-service:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-#      - ASPNETCORE_HTTPS_PORTS=8081
+      #      - ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
       - MONGODB_HOST=order-db
@@ -86,6 +74,7 @@ services:
       - UsersMicroservicePort=9000
       - ProductsMicroserviceName=products-service
       - ProductsMicroservicePort=8080
+      - ConnectionStrings__Redis=redis:6379
     depends_on:
       - order-db
     ports:
@@ -93,16 +82,25 @@ services:
     #      - "9091:8081"
     volumes:
       - ~/.aspnet/https:/https:ro
-    networks:
-      - orders-mongo-network
-      - ecommerce-network
-
-networks:
-  users-postgres-network:
-    driver: bridge
-  products-postgres-network:
-    driver: bridge
-  orders-mongo-network:
-    driver: bridge
-  ecommerce-network:
-    driver: bridge
+  
+  redis:
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ../redis-cache:/data
+  
+  gateway.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+    #      - ASPNETCORE_HTTPS_PORTS=8081
+    #      - ASPNETCORE_Kestrel__Certificates__Default__Password=root007
+    #      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    depends_on:
+      - products-service
+      - users-service
+      - order-service
+    ports:
+      - "4000:8080"

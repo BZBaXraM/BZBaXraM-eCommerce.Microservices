@@ -1,16 +1,14 @@
 namespace eCommerce.Orders.BLL.Policies;
 
-public class UsersMicroservicePolicies(ILogger<UsersMicroservicePolicies> logger) : IUsersMicroservicePolicies
+public class UsersMicroservicePolicies(IPollyPolicies pollyPolicies)
+    : IUsersMicroservicePolicies
 {
-    public IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+    public IAsyncPolicy<HttpResponseMessage> GetCombinedPolicy()
     {
-        return Policy.HandleResult<HttpResponseMessage>(r =>
-                !r.IsSuccessStatusCode)
-            .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                (outcome, timespan, attempt, context) =>
-                {
-                    logger.LogInformation("Retry {Attempt} after {TimespanSeconds} seconds", attempt, timespan.Seconds);
-                }
-            );
+        var retryPolicy = pollyPolicies.GetRetryPolicy(5);
+        var circuitBreakerPolicy = pollyPolicies.GetCircuitBreakerPolicy(3, TimeSpan.FromMinutes(2));
+        var timeoutPolicy = pollyPolicies.GetTimeoutPolicy(TimeSpan.FromSeconds(5));
+
+        return Policy.WrapAsync(retryPolicy, circuitBreakerPolicy, timeoutPolicy);
     }
 }

@@ -7,13 +7,7 @@ public class UsersController(IUsersService service) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetUsersAsync()
     {
-        await Task.Delay(100);
-
-        throw new NotImplementedException();
-
-        var users = await service.GetUsersAsync();
-
-        return Ok(users);
+        return Ok(await service.GetUsersAsync());
     }
 
     [HttpGet("{userId:guid}")]

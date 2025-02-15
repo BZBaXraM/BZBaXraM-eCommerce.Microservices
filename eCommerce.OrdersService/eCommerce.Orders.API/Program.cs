@@ -1,6 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddBll();
+builder.Services.AddBll(builder.Configuration);
 builder.Services.AddDal(builder.Configuration);
 
 builder.Services.AddControllers()
@@ -19,13 +19,16 @@ builder.Services.AddRefitClient<IUsersMicroserviceClient>()
                 $"http://{builder.Configuration["UsersMicroserviceName"]}:{builder.Configuration["UsersMicroservicePort"]}");
     })
     .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUsersMicroservicePolicies>()
-        .GetRetryPolicy());
+        .GetCombinedPolicy());
 
 builder.Services.AddRefitClient<IProductsMicroserviceClient>()
     .ConfigureHttpClient(c =>
         c.BaseAddress =
             new Uri(
-                $"http://{builder.Configuration["ProductsMicroserviceName"]}:{builder.Configuration["ProductsMicroservicePort"]}"));
+                $"http://{builder.Configuration["ProductsMicroserviceName"]}:{builder.Configuration["ProductsMicroservicePort"]}"))
+    .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IProductsMicroservicePolicies
+        >()
+        .GetCombinedPolicy());
 
 
 builder.Services.AddCors(options =>

@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Caching.Distributed;
+
 namespace eCommerce.Orders.BLL.Services;
 
 public class OrdersService(
@@ -8,7 +10,8 @@ public class OrdersService(
     IValidator<OrderUpdateRequest> orderUpdateRequestValidator,
     IValidator<OrderItemUpdateRequest> orderItemUpdateRequestValidator,
     IUsersMicroserviceClient usersMicroserviceClient,
-    IProductsMicroserviceClient productsMicroserviceClient)
+    IProductsMicroserviceClient productsMicroserviceClient,
+    IDistributedCache distributedCache)
     : IOrdersService
 {
     public async Task<OrderResponse?> AddOrderAsync(OrderAddRequest? orderAddRequest)
@@ -37,6 +40,19 @@ public class OrdersService(
 
             var product = await productsMicroserviceClient.GetProductByIdAsync(orderItemAddRequest.ProductId);
 
+            var key = $"product-{orderItemAddRequest.ProductId}";
+
+            var productCache = await distributedCache.GetStringAsync(key);
+
+            if (productCache is not null)
+            {
+                JsonSerializer.Deserialize<ProductDto>(productCache);
+            }
+            else
+            {
+                await distributedCache.SetStringAsync(key, JsonSerializer.Serialize(product));
+            }
+
             if (product is null)
             {
                 throw new ArgumentException("Invalid product ID");
@@ -60,6 +76,19 @@ public class OrdersService(
         }
 
         var user = await usersMicroserviceClient.GetUserByIdAsync(addedOrder.UserId);
+
+        var userKey = $"user-{addedOrder.UserId}";
+
+        var userCache = await distributedCache.GetStringAsync(userKey);
+
+        if (userCache is not null)
+        {
+            JsonSerializer.Deserialize<UserDto>(userCache);
+        }
+        else
+        {
+            await distributedCache.SetStringAsync(userKey, JsonSerializer.Serialize(user));
+        }
 
         if (user is null)
         {
@@ -177,7 +206,7 @@ public class OrdersService(
             {
                 var product = await productsMicroserviceClient.GetProductByIdAsync(orderItem.ProductId);
                 mapper.Map(product.FindAll(x => x.ProductId == orderItem.ProductId).FirstOrDefault()
-                           ?? new ProductDto(), orderItem);
+                    , orderItem);
             }
 
             var user = await usersMicroserviceClient.GetUserByIdAsync(response.UserId);

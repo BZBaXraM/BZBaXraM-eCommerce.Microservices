@@ -1,10 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
-
 namespace eCommerce.Products.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProductsController(IProductsService service) : ControllerBase
+public class ProductsController(
+    IProductsService service,
+    ProductAddRequestValidator addRequestValidator,
+    ProductUpdateRequestValidator updateRequestValidator)
+    : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<ProductResponse>> GetProducts()
@@ -31,6 +33,13 @@ public class ProductsController(IProductsService service) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddProduct(ProductAddRequest request)
     {
+        var requestValidationResult = await addRequestValidator.ValidateAsync(request);
+
+        if (!requestValidationResult.IsValid)
+        {
+            return BadRequest(requestValidationResult.Errors);
+        }
+
         var product = await service.AddProductAsync(request);
         return Ok(product);
     }
@@ -38,6 +47,13 @@ public class ProductsController(IProductsService service) : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateProduct(ProductUpdateRequest request)
     {
+        var requestValidationResult = await updateRequestValidator.ValidateAsync(request);
+
+        if (!requestValidationResult.IsValid)
+        {
+            return BadRequest(requestValidationResult.Errors);
+        }
+
         var product = await service.UpdateProductAsync(request);
         return Ok(product);
     }

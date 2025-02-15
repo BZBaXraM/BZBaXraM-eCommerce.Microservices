@@ -2,6 +2,8 @@
 
 global using System.Net;
 global using System.Net.Http.Json;
+global using System.Text;
+global using System.Text.Json;
 global using AutoMapper;
 global using eCommerce.Orders.BLL.Clients;
 global using eCommerce.Orders.BLL.DTOs;
@@ -17,4 +19,6 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using MongoDB.Driver;
 global using Polly;
+global using Polly.Bulkhead;
+global using Polly.Retry;
 global using Refit;

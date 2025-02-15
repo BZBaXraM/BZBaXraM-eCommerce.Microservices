@@ -1,30 +1,59 @@
+networks:
+  backend:
+    driver: bridge
+
 services:
   products-db:
     image: postgres:latest
+    networks:
+      - backend
   
   users-db:
     image: postgres:latest
+    networks:
+      - backend
   
   order-db:
     image: mongo:latest
+    networks:
+      - backend
   
   products-service:
     image: ${DOCKER_REGISTRY-}products-service
+    networks:
+      - backend
     build:
       context: .
       dockerfile: eCommerce.ProductsService/eCommerce.Products.API/Dockerfile
   
   users-service:
     image: ${DOCKER_REGISTRY-}users-service
+    networks:
+      - backend
     build:
       context: .
       dockerfile: eCommerce.UsersService/eCommerce.Users.API/Dockerfile
   
   order-service:
     image: ${DOCKER_REGISTRY-}order-service
+    networks:
+      - backend
     build:
       context: .
       dockerfile: eCommerce.OrdersService/eCommerce.Orders.API/Dockerfile
+  
+  redis:
+    image: redis:latest
+    networks:
+      - backend
+  
+  gateway.api:
+    image: ${DOCKER_REGISTRY-}gateway.api
+    networks:
+      - backend
+    build:
+      context: .
+      dockerfile: eCommerce.OrdersService/ApiGateway/Dockerfile
 
 volumes:
   products_data:
